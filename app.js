@@ -7,7 +7,7 @@ var async   = require('async');
 
 var config = require('./config.js');
 
-app.get('/scrape', function(req, res){
+app.get('/', function(req, res){
 	
 	//url = 'http://www.imdb.com/title/tt1229340/';
 	var url = 'https://kth.kattis.com/submissions'
