@@ -2,10 +2,14 @@ var express = require('express');
 var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
-var app     = express();
 var async   = require('async');
 
+var app     = express();
+
 var config = require('./config.js');
+
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade')
 
 app.get('/', function(req, res){
 	
@@ -80,8 +84,8 @@ app.get('/', function(req, res){
 					}
 				});
 		}
-
-		res.send(200, "OKI");
+		//Render the view for the response
+		res.render('index',{data: data});
 	});
 });
 
