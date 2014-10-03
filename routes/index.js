@@ -15,7 +15,7 @@ exports.index = function(req, res){
 		}
 		//Do this until the condition is true
 		,function(callback){
-		console.log("Number of pages: " + kattisPageNumber);
+		// console.log("Number of pages: " + kattisPageNumber);
 		var url = 'https://kth.kattis.com/submissions?page='+kattisPageNumber;
 		request(url, function (error, response, html){
 			if (!error && response.statusCode == 200) {
