@@ -19,20 +19,6 @@ app.get('/', function(req, res){
 	request(url, function(error, response, html){
 		if (!error && response.statusCode == 200) {
 			var $ = cheerio.load(html);
-
-			// async.series([
-			// 	//Extract the data
-			// 	function(callback){
-
-			// 	},
-			// 	//Save the data
-			// 	function(callback){
-
-			// 	}
-
-			// ],function(err,result){
-
-			// });
 				var data = [];
 				var row = {};
 				var numberRow = 0;
