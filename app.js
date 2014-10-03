@@ -16,57 +16,69 @@ app.get('/scrape', function(req, res){
 		if (!error && response.statusCode == 200) {
 			var $ = cheerio.load(html);
 
+			// async.series([
+			// 	//Extract the data
+			// 	function(callback){
 
-			$('tr').each(function(i, element){
-				var a = $(this).prev();
+			// 	},
+			// 	//Save the data
+			// 	function(callback){
+
+			// 	}
+
+			// ],function(err,result){
+
+			// });
+				var data = [];
 				var row = {};
+				var numberRow = 0;
 				$('td').each(function(j,col){
-					var b = $(this).prev();
+					var b = $(this);
 
 					var key = "ID";
+					var saveData = false;
 
-					console.log("Row: " + i + " Col: " + j);
-					console.log(b.text());
-
-					switch(j){
+					switch(j-(7*numberRow)){
 						//ID
-						case 1:
+						case 0:
 							key = "id";
 							break;
 						//DATE
-						case 2:
+						case 1:
 							key = "date";
 							break;
 						//AUTHOR
-						case 3:
+						case 2:
 							key = "author";
 							break;
 						//PROBLEM
-						case 4:
+						case 3:
 							key = "problem";
 							break;
 						//STATUS
-						case 5:
+						case 4:
 							key = "status";
 							break;
 						//CPU
-						case 6:
+						case 5:
 							key = "cpu";
 							break;
 						//LANG:
-						case 7:
+						case 6: "value", 
 							key = "lang";
+							numberRow++;
+							saveData = true;
 							break;
 					}
 					row[key] = b.text();
-					// console.log(b.text());
+
+					if(saveData){
+						var linenumber = numberRow;
+						console.log(linenumber + ": " + JSON.stringify(row));
+						data.push(row);
+						row = {};
+					}
 				});
-
-				console.log(row);
-
-
-				// console.log(a.text());
-			});
 		}
 
 		res.send(200, "OKI");
