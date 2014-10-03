@@ -3,6 +3,7 @@ var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
 var app     = express();
+var async   = require('async');
 
 var config = require('./config.js');
 
@@ -14,47 +15,54 @@ app.get('/scrape', function(req, res){
 	request(url, function(error, response, html){
 		if (!error && response.statusCode == 200) {
 			var $ = cheerio.load(html);
+
+
 			$('tr').each(function(i, element){
 				var a = $(this).prev();
 				var row = {};
 				$('td').each(function(j,col){
 					var b = $(this).prev();
 
-					var key = "DEFAULT";
+					var key = "ID";
+
+					console.log("Row: " + i + " Col: " + j);
+					console.log(b.text());
 
 					switch(j){
 						//ID
-						case 0:
+						case 1:
 							key = "id";
 							break;
 						//DATE
-						case 1:
+						case 2:
 							key = "date";
 							break;
 						//AUTHOR
-						case 2:
+						case 3:
 							key = "author";
 							break;
 						//PROBLEM
-						case 3:
+						case 4:
 							key = "problem";
 							break;
 						//STATUS
-						case 4:
+						case 5:
 							key = "status";
 							break;
 						//CPU
-						case 5:
+						case 6:
 							key = "cpu";
 							break;
 						//LANG:
-						case 6:
+						case 7:
 							key = "lang";
 							break;
-
 					}
-					console.log(b.text());
+					row[key] = b.text();
+					// console.log(b.text());
 				});
+
+				console.log(row);
 
 
 				// console.log(a.text());
