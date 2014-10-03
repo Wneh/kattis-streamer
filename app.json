@@ -1,0 +1,6 @@
+{
+  "name": "KATTIS streamer",
+  "description": "Small app to do filtering steraming submissions on KATTIS",
+  "repository": "https://github.com/Wneh/kattis-streamer",
+  "keywords": ["KATTIS", "Streaming","filter"]
+}
