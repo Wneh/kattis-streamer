@@ -4,14 +4,26 @@ var async   = require('async');
 var config = require('./../config.js');
 
 exports.index = function(req, res){
-	var url = 'https://kth.kattis.com/submissions'
 
-	request(url, function(error, response, html){
-		if (!error && response.statusCode == 200) {
-			var $ = cheerio.load(html);
-				var data = [];
+	var data = [];
+	var kattisPageNumber = 0;
+
+	async.until (
+		//Condition
+		function(){
+			return data.length >= config.LIMIT;
+		}
+		//Do this until the condition is true
+		,function(callback){
+		console.log("Number of pages: " + kattisPageNumber);
+		var url = 'https://kth.kattis.com/submissions?page='+kattisPageNumber;
+		request(url, function (error, response, html){
+			if (!error && response.statusCode == 200) {
+				var $ = cheerio.load(html);
+					
 				var row = {};
 				var numberRow = 0;
+				
 				$('td').each(function(j,col){
 					var b = $(this);
 
@@ -54,17 +66,28 @@ exports.index = function(req, res){
 
 					if(saveData){
 						var linenumber = numberRow;
-						// console.log(linenumber + ": " + JSON.stringify(row));
-						//CHeck if this is person of interest
+						//Check if this is person of interest
 						if(config.names[row["author"]]){
 							data.push(row);
 						}
 						row = {};
 					}
 				});
+				kattisPageNumber++;
+				callback();
+			}
+			else {
+				callback(error);
+			}
+		});
+	},
+	//Done send back to the user
+	function(err){
+		if(err){
+			res.send(500,err);
 		}
 		//Render the view for the response
-		res.render('index',{data: data});
+		res.render('index',{data: data});	
 	});
 };
 
