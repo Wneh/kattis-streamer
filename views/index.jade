@@ -1,3 +1,21 @@
 extends layout
 
 block content
+
+	h1 Much data Such bootstrap
+
+	table(class="table")
+		thead
+			tr
+				th ID
+				th DATE
+				th AUTHOR
+				th PROBLEM
+				th STATUS
+				th CPU
+				th LANG
+		tbody
+			each row in data
+				tr
+					each col in row
+						th #{col}
