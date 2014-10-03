@@ -1,0 +1,13 @@
+{
+	"name"         : "kattis-streamer",
+	"version"      : "0.0.1",
+	"description"  : "Streams the submissions on KATTIS judge",
+	"main"         : "app.js",
+	"author"       : "Wneh",
+	"private"      : true,
+	"dependencies" : {
+		"express"    : "4.x",
+		"request"    : "latest",
+		"cheerio"    : "latest"
+	}
+}
