@@ -55,7 +55,10 @@ exports.index = function(req, res){
 					if(saveData){
 						var linenumber = numberRow;
 						// console.log(linenumber + ": " + JSON.stringify(row));
-						data.push(row);
+						//CHeck if this is person of interest
+						if(config.names[row["author"]]){
+							data.push(row);
+						}
 						row = {};
 					}
 				});
