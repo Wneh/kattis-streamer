@@ -109,7 +109,6 @@ exports.index = function(req, res){
 								if(saveData){
 									//Save the currentId of this row
 									currentId = row["id"];
-									console.log(row);
 									//Check if this is person of interest
 									if(config.names[row["author"]]){
 										//Check if we done have it already
@@ -122,7 +121,6 @@ exports.index = function(req, res){
 												if(err){
 													callback(err);
 												}
-												console.log("Added new document to the database");
 												numberOfFoundDocuments++;
 												//Document was inserted
 											});
