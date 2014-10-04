@@ -156,7 +156,7 @@ exports.index = function(req, res){
 		},
 		//Series 3 - Extract the data from the database
 		function (callback){
-			db.find().sort({"id": -1}).limit(config.LIMIT).exec(function (err, docs) {
+			db.find({},{_id: 0}).sort({"id": -1}).limit(config.LIMIT).exec(function (err, docs) {
 				if(err){
 					callback(err);
 				}
