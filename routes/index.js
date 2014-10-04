@@ -114,10 +114,16 @@ exports.index = function(req, res){
 										//Check if we done have it already
 										if(row["id"] > lastId){
 											//Before we insert it we need to fix the date format.
-											var fixedRow = fixDate(row);
+											var originalDate = row["date"];
+
+											if(originalDate.substring(0,4) != "2014"){
+												var today = new Date();
+												var month = today.getMonth() + 1;
+												row["date"] = today.getFullYear() + "-" + month + "-" + today.getDate() + " " + originalDate;
+											}
 
 											//Insert it to the database
-											db.insert(fixedRow, function (err, newDoc){
+											db.insert(row, function (err, newDoc){
 												if(err){
 													callback(err);
 												}
