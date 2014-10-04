@@ -112,11 +112,13 @@ exports.index = function(req, res){
 									console.log(row);
 									//Check if this is person of interest
 									if(config.names[row["author"]]){
-										console.log()
 										//Check if we done have it already
 										if(row["id"] > lastId){
+											//Before we insert it we need to fix the date format.
+											var fixedRow = fixDate(row);
+
 											//Insert it to the database
-											db.insert(row, function (err, newDoc){
+											db.insert(fixedRow, function (err, newDoc){
 												if(err){
 													callback(err);
 												}
@@ -171,7 +173,14 @@ exports.index = function(req, res){
 
 };
 
-function scrapePage(pageNumber, callback){
+function fixDate(row){
+	var originalDate = row["date"];
 
-};
+	if(originalDate.substring(0,4) != "2014"){
+		var today = new Date();
+		var month = today.getMonth() + 1;
+		row["date"] = today.getFullYear() + "-" + month + "-" + today.getDate() + " " + originalDate;
+	}
+	return row;
+}
 
