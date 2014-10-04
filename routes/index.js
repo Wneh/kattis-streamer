@@ -3,10 +3,26 @@ var cheerio = require('cheerio');
 var async   = require('async');
 var config = require('./../config.js');
 
+var db = new Datastore({ filename: './data.db', autoload: true });
+
 exports.index = function(req, res){
 
 	var data = [];
 	var kattisPageNumber = 0;
+
+
+	async.series([
+		//Scrape all the that is missing
+		function(callback){
+
+		},
+		function(callback){
+
+		}
+	],
+	function(err){
+		//Done send back the responce the the user
+	});
 
 	async.until (
 		//Condition
@@ -31,7 +47,7 @@ exports.index = function(req, res){
 					var saveData = false;
 
 					switch(j-(7*numberRow)){
-						//ID
+						//index
 						case 0:
 							key = "id";
 							break;
@@ -89,5 +105,9 @@ exports.index = function(req, res){
 		//Render the view for the response
 		res.render('index',{data: data});	
 	});
+};
+
+function scrapePage(callback){
+	
 };
 

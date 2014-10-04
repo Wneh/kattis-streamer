@@ -1,18 +1,23 @@
 var express = require('express');
-var routes   = require('./routes/index.js');
+var routes = require('./routes/index.js');
 var config = require('./config.js');
+var async = require('async');
+
+var Datastore = require('nedb');
+var db = new Datastore({ filename: './data.db', autoload: true });
 
 //Create the app
-var app     = express();
+var app = express();
 
 //SETTINGS
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jade')
+app.set('view engine', 'jade');
 
 //Add the routes
 app.get('/',routes.index);
 
-//Start the server
 var server = app.listen(config.SERVER_PORT, function() {
-    console.log('Listening on port %d', server.address().port);
+	console.log('Listening on port %d', server.address().port);
 });
+
+
