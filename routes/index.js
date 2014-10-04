@@ -3,7 +3,14 @@ var cheerio = require('cheerio');
 var async   = require('async');
 var config = require('./../config.js');
 
-var db = new Datastore({ filename: './data.db', autoload: true });
+// var Datastore = require('nedb');
+// var db = new Datastore({ filename: './myData.db', autoload: true });
+// var Datastore = require('nedb'),                                                                                                                                              
+//     path = require('path'),
+//     db = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'data.db'), autoload: true });
+
+var Datastore = require('nedb')
+  , db = new Datastore({ filename: 'db/data', autoload: true });
 
 exports.index = function(req, res){
 
@@ -12,10 +19,10 @@ exports.index = function(req, res){
 	var lastId = 0;
 
 	async.series([
-		//Get the latest lastId number from the database
-		function(callback){
+		//Series 1 - Get the latest lastId number from the database
+		function (callback){
 			//Find all documents that have an id, thereafter sort them and pickout the first
-			db.find({ "id": { $exists: true } }).sort({"id": -1}.limit(1).exec(function (err, docs) {
+			db.find({ "id": { $exists: true } }).sort({"id": -1}).limit(1).exec(function (err, docs) {
 				if(err){
 					console.log("Something went wrong trying to get the lastest stored submissions id")
 					callback(err);
@@ -23,26 +30,32 @@ exports.index = function(req, res){
 
 				if(docs.length == 0){
 					//No docs found so let the lastID be 0, which is it default value
-					callback();
+				} else {
+					lastId = docs[0]["id"];
+					console.log("Last id is: " + lastId);
 				}
-
-				lastId = docs[0]["id"];
-				console.log("Last id is: " + lastId);
+				callback();
+				
   				// docs is an array containing documents Mars, Earth, Jupiter
   				// If no document is found, docs is equal to []
 			});
 		},
-		//Scrape all the that is missing
-		function(callback){
+		//Series 2 - Scrape all the that is missing
+		function (callbackSeries){
 
+				var numberOfFoundDocuments = 0;
+				//Really large number since the firstime we dont know the current id yet
+				var currentId = 999999999999;
 
 				async.until(
 					//Condition
-					function(){
-						return data.length >= config.LIMIT || currentId > lastId;
+					function (){
+						console.log(numberOfFoundDocuments+ " >= "+config.LIMIT + " || " + currentId + " <= " + lastId);
+
+						return numberOfFoundDocuments >= config.LIMIT || currentId <= lastId;
 					}
 					//Do this until the condition is true
-					,function(callback){
+					,function (callback){
 					// console.log("Number of pages: " + kattisPageNumber);
 					var url = 'https://kth.kattis.com/submissions?page='+kattisPageNumber;
 					request(url, function (error, response, html){
@@ -94,17 +107,28 @@ exports.index = function(req, res){
 
 								//We just got our self a row of data
 								if(saveData){
+									//Save the currentId of this row
+									currentId = row["id"];
+									console.log(row);
 									//Check if this is person of interest
 									if(config.names[row["author"]]){
+										console.log()
 										//Check if we done have it already
 										if(row["id"] > lastId){
 											//Insert it to the database
-
+											db.insert(row, function (err, newDoc){
+												if(err){
+													callback(err);
+												}
+												console.log("Added new document to the database");
+												numberOfFoundDocuments++;
+												//Document was inserted
+											});
 										}
 									}	
+									//Empty the row
+									row = {};
 								}
-								//Empty the row
-								row = {};
 							});
 							kattisPageNumber++;
 							callback();
@@ -114,22 +138,34 @@ exports.index = function(req, res){
 						}
 					});
 				},
-	//Done send back to the user
-	function(err){
-		
-	});
+				//Done send back to the user
+				function (err){
+					//Check for errors
+					if(err){
+						callbackSeries(err);
+					}
+					//No error so just continue
+					callbackSeries();
+				});
 		},
-		function(callback){
-
+		//Series 3 - Extract the data from the database
+		function (callback){
+			db.find().sort({"id": -1}).limit(config.LIMIT).exec(function (err, docs) {
+				if(err){
+					callback(err);
+				}
+				//Found the documents so pass it along
+				callback(null,docs);
+			});
 		}
 	],
-	function(err){
+	function (err,results){
 		//Done send back the responce the the user
 		if(err){
 			res.send(500,err);
 		}
 		//Render the view for the response
-		res.render('index',{data: data});	
+		res.render('index',{data: results[2]});	
 	});
 
 
