@@ -9,8 +9,8 @@
     "async": "0.9.x",
     "cheerio": "0.17.x",
     "express": "4.x",
-    "jade": "^1.7.0",
-    "nedb": "^0.11.1",
-    "request": "2.44.x",
+    "jade": "1.7.0",
+    "nedb": "0.11.1",
+    "request": "2.44.x"
   }
 }
