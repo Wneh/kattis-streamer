@@ -9,25 +9,34 @@ exports.index = function(req, res){
 
 	var data = [];
 	var kattisPageNumber = 0;
-
+	var lastId = 0;
 
 	async.series([
+		//Get the latest lastId number from the database
+		function(callback){
+			//Find all documents that have an id, thereafter sort them and pickout the first
+			db.find({ "id": { $exists: true } }).sort({"id": -1}.limit(1).exec(function (err, docs) {
+				if(err){
+					console.log("Something went wrong trying to get the lastest stored submissions id")
+					callback(err);
+				}
+
+				if(docs.length == 0){
+					//No docs found so let the lastID be 0, which is it default value
+					callback();
+				}
+
+				lastId = docs[0]["id"];
+  				// docs is an array containing documents Mars, Earth, Jupiter
+  				// If no document is found, docs is equal to []
+			});
+		},
 		//Scrape all the that is missing
 		function(callback){
-
-		},
-		function(callback){
-
-		}
-	],
-	function(err){
-		//Done send back the responce the the user
-	});
-
-	async.until (
+				async.until(
 		//Condition
 		function(){
-			return data.length >= config.LIMIT;
+			return data.length >= config.LIMIT ;
 		}
 		//Do this until the condition is true
 		,function(callback){
@@ -99,15 +108,26 @@ exports.index = function(req, res){
 	},
 	//Done send back to the user
 	function(err){
+		
+	});
+		},
+		function(callback){
+
+		}
+	],
+	function(err){
+		//Done send back the responce the the user
 		if(err){
 			res.send(500,err);
 		}
 		//Render the view for the response
 		res.render('index',{data: data});	
 	});
+
+
 };
 
-function scrapePage(callback){
-	
+function scrapePage(pageNumber, callback){
+
 };
 
