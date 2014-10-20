@@ -119,7 +119,12 @@ exports.index = function(req, res){
 											if(originalDate.substring(0,4) != "2014"){
 												var today = new Date();
 												var month = today.getMonth() + 1;
-												row["date"] = today.getFullYear() + "-" + month + "-" + today.getDate() + " " + originalDate;
+												var day = today.getDate();
+												if(day < 10){
+													day = "0"+day;
+												}
+
+												row["date"] = today.getFullYear() + "-" + month + "-" + day + " " + originalDate;
 											}
 
 											//Insert it to the database
