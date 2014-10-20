@@ -4,7 +4,7 @@ block content
 
 	h1 Much data Such bootstrap
 
-	table(class="table")
+	table(class="table table-hover")
 		thead
 			tr
 				th ID
@@ -20,7 +20,7 @@ block content
 					tr.success
 						each col in row
 							th #{col}
-				else if row.status == "Wrong Answer" || row.status == "Time Limit Exceeded"
+				else if row.status == "Wrong Answer" || row.status == "Time Limit Exceeded" || row.status == "Run Time Error"
 					tr.danger
 						each col in row
 							th #{col}
