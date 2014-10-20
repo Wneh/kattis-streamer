@@ -16,6 +16,15 @@ block content
 				th LANG
 		tbody
 			each row in data
-				tr
-					each col in row
-						th #{col}
+				if row.status == "Accepted"
+					tr.success
+						each col in row
+							th #{col}
+				else if row.status == "Wrong Answer" || row.status == "Time Limit Exceeded"
+					tr.danger
+						each col in row
+							th #{col}
+				else 
+					tr
+						each col in row
+							th #{col}
