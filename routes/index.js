@@ -120,8 +120,14 @@ exports.index = function(req, res){
 												var today = new Date();
 												var month = today.getMonth() + 1;
 												var day = today.getDate();
+												//Added leading zero if missing for date
 												if(day < 10){
 													day = "0"+day;
+												}
+
+												//Adding leading zero if missing for time
+												if(originalDate.indexOf(':') == 1){
+													originalDate = "0"+originalDate;
 												}
 
 												row["date"] = today.getFullYear() + "-" + month + "-" + day + " " + originalDate;
