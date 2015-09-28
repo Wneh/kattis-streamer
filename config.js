@@ -9,7 +9,8 @@ var config = {
     	  "Magnus Gudmandsen",
     	  "Mikael Florén",
     	  "Christopher Teljstedt",
-          "Philip Eliasson"]
+          "Philip Eliasson",
+          "Henrik Viksten"]
 }
 
 //Creates a lookup table for all of the people in the VIP vector
